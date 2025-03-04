@@ -7,7 +7,7 @@ import { limit } from "@grammyjs/ratelimiter";
 import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { User } from "grammy/types";
-import { getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
+import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
 import { freeStorage } from "@grammyjs/storage-free";
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
@@ -216,26 +216,35 @@ bot.command("setlog", async (ctx) => {
 const punishUser = (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
   if (ctx.session.userList.groupLogId != 0) {
-    ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
-      `Name: ${ctx.from?.first_name + ' ' + ctx.from?.last_name}`,
-      `Username: ${ctx.from?.username ? '@' + ctx.from?.username : ''}`,
-      `User ID': ${ctx.from?.id}`,
-    ].join('\n')).catch()
+    if (ctx.from) {
+      ctx.api.sendMessage('\\-100' + ctx.session.userList.groupLogId, [
+        `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
+        `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
+        `User ID'\\: ${ctx.from?.id}`,
+        `User\\: ${getGrammyNameLink(ctx.from)}`,
+        {
+           parse_mode: "MarkdownV2"
+        }
+      ].join('\n')).catch()
+    }
   }
   switch (punishment) {
     case "kick": {
       ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      return;
     };
     case "ban": {
       ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      return;
     };
     case "mute": {
       ctx.api.restrictChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0, {
         can_send_messages: false
       }).catch()
+      return;
     }
     default: {
-
+      return;
     }
   }
 
