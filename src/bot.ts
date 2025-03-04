@@ -222,7 +222,7 @@ const punishUser = (ctx: MyContext) => {
         `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
         `User ID'\\: ${ctx.from?.id}`,
         `User\\: ${getGrammyNameLink(ctx.from)}`,
-        `Action\\: ${punishment}`,
+        `Action\\: ${punishment.toUpperCase()}`,
         {
            parse_mode: "MarkdownV2"
         }
