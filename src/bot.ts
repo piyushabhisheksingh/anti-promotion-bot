@@ -217,7 +217,7 @@ const punishUser = (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
   if (ctx.session.userList.groupLogId != 0) {
     if (ctx.from) {
-      ctx.api.sendMessage('\\-100' + ctx.session.userList.groupLogId, [
+      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
         `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
         `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
         `User ID'\\: ${ctx.from?.id}`,
