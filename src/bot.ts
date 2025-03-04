@@ -234,10 +234,10 @@ const punishUser = (ctx: MyContext) => {
       ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
       break;
     };
-    case "ban": {
-      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
-      break;
-    };
+    // case "ban": {
+    //   ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+    //   break;
+    // };
     case "mute": {
       ctx.api.restrictChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0, {
         can_send_messages: false
