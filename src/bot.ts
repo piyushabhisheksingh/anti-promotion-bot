@@ -7,7 +7,7 @@ import { limit } from "@grammyjs/ratelimiter";
 import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { User } from "grammy/types";
-import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
+import { escapeMetaCharacters, getGrammyLink, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
 import { freeStorage } from "@grammyjs/storage-free";
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
@@ -218,14 +218,11 @@ const punishUser = async (ctx: MyContext) => {
   if (ctx.session.userList.groupLogId != 0) {
     if (ctx.from) {
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
-        `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
-        `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
-        `User ID\\: ${ctx.from?.id}`,
-        `User\\: ${getGrammyNameLink(ctx.from)}`,
-        `Action\\: ${punishment.toUpperCase()}`,
-        {
-           parse_mode: "MarkdownV2"
-        }
+        `Name: ${(ctx.from?.first_name)}`,
+        `Username: ${(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
+        `User ID: ${ctx.from?.id}`,
+        `User: ${getGrammyLink(ctx.from)}`,
+        `Action: ${punishment.toUpperCase()}`,
       ].join('\n')).catch()
     }
   }
