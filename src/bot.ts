@@ -21,6 +21,7 @@ export interface SessionData {
       id: number,
       warnedAt: number
     }>
+    groupLogId: number
   }
   config: {
     punishment: string
@@ -69,7 +70,8 @@ bot.use(session({
     initial: () => {
       return {
         exceptionList: [],
-        warnList: []
+        warnList: [],
+        groupLogId: 0
       }
     },
     getSessionKey: getChatSessionKey
@@ -158,9 +160,10 @@ bot.api.config.use(autoRetry(
   }
 ));
 
-bot.command("help", (ctx)=>{
-  const msgArr= [
+bot.command("help", (ctx) => {
+  const msgArr = [
     "-/setpunish <action>: to set punishment. Action - kick/ban/warn.",
+    "-/setlog <groupID>: to set punishment.",
   ]
   replytoMsg({
     ctx,
@@ -182,6 +185,20 @@ bot.command("setpunish", async (ctx) => {
   }
 })
 
+bot.command("setlog", async (ctx) => {
+  const admins = await ctx.api.getChatAdministrators(ctx.chatId)
+  const admin = admins.find((user) => user.user.id == ctx.from?.id)
+  if (admin) {
+    if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
+      ctx.session.userList.groupLogId = Number(ctx.match.trim())
+      replytoMsg({
+        ctx,
+        message: "Logs redirected to " + ctx.match.trim()
+      })
+    }
+  }
+})
+
 // bot.command("settings", async (ctx) => {
 //   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
 //   const admin = admins.find((user) => user.user.id == ctx.from?.id)
@@ -198,6 +215,13 @@ bot.command("setpunish", async (ctx) => {
 
 const punishUser = (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
+  if (ctx.session.userList.groupLogId != 0) {
+    ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
+      `Name: ${ctx.from?.first_name + ' ' + ctx.from?.last_name}`,
+      `Username: ${ctx.from?.username ? '@' + ctx.from?.username : ''}`,
+      `User ID': ${ctx.from?.id}`,
+    ].join('\n')).catch()
+  }
   switch (punishment) {
     case "kick": {
       ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
@@ -301,6 +325,7 @@ bot.hears(/.*/, async (ctx) => {
 bot.api.deleteMyCommands()
 bot.api.setMyCommands([
   { command: "setpunish", description: "set punishment" },
+  { command: "setlog", description: "set logs to logger group" },
   { command: "help", description: "settings help" }
 ]);
 
