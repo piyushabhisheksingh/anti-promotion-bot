@@ -233,7 +233,7 @@ const punishUser = async (ctx: MyContext) => {
   }
   switch (punishment) {
     case "kick": {
-      await ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      await ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
       await ctx.api.unbanChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
       break;
     };
