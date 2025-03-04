@@ -255,7 +255,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.on(["chat_member", ":new_chat_members"], async (ctx) => {
+bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
