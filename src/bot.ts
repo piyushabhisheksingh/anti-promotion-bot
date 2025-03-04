@@ -71,7 +71,7 @@ bot.use(session({
       return {
         exceptionList: [],
         warnList: [],
-        groupLogId: 0
+        groupLogId: 2371255392
       }
     },
     getSessionKey: getChatSessionKey
