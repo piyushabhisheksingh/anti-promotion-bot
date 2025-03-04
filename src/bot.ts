@@ -213,7 +213,7 @@ bot.command("setlog", async (ctx) => {
 //   }
 // })
 
-const punishUser = (ctx: MyContext) => {
+const punishUser = async (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
   if (ctx.session.userList.groupLogId != 0) {
     if (ctx.from) {
@@ -231,11 +231,12 @@ const punishUser = (ctx: MyContext) => {
   }
   switch (punishment) {
     case "kick": {
-      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      await ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      await ctx.api.unbanChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
       break;
     };
     case "ban": {
-      ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
+      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
       break;
     };
     case "mute": {
