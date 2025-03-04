@@ -220,7 +220,7 @@ const punishUser = (ctx: MyContext) => {
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
         `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
         `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
-        `User ID'\\: ${ctx.from?.id}`,
+        `User ID\\: ${ctx.from?.id}`,
         `User\\: ${getGrammyNameLink(ctx.from)}`,
         `Action\\: ${punishment.toUpperCase()}`,
         {
