@@ -232,20 +232,20 @@ const punishUser = (ctx: MyContext) => {
   switch (punishment) {
     case "kick": {
       ctx.api.kickChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
-      return;
+      break;
     };
     case "ban": {
       ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch()
-      return;
+      break;
     };
     case "mute": {
       ctx.api.restrictChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0, {
         can_send_messages: false
       }).catch()
-      return;
+      break;
     }
     default: {
-      return;
+      break;
     }
   }
 
