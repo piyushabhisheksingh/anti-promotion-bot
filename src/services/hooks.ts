@@ -17,6 +17,9 @@ export const escapeMetaCharacters = (inputString: string) => {
 export const getGrammyNameLink = (user: User) => {
   return `[${escapeMetaCharacters(user.first_name.length ? (user.first_name + " " + (user.last_name ?? "")) : user.username?.length ? `@${user.username}` : user.id ? user.id.toString() : "").trim()}](tg://user?id\\=${user.id})`
 }
+export const getGrammyLink = (user: User) => {
+  return `tg://user?id=${user.id}`
+}
 
 export const replytoMsg = async ({ ctx, message, replyMarkup, msgID }: { ctx: MyContext, message: string, replyMarkup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply, msgID?: number }) => {
 
