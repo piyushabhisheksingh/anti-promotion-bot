@@ -215,6 +215,7 @@ bot.command("setlog", async (ctx) => {
 
 const punishUser = async (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
+  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (ctx.session.userList.groupLogId != 0) {
     if (ctx.from) {
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
@@ -222,8 +223,8 @@ const punishUser = async (ctx: MyContext) => {
         `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
         `User ID\\: ${ctx.from?.id}`,
         `User\\: ${getGrammyNameLink(ctx.from)}`,
-        `Group Name\\: ${ctx.chat?.first_name}`,
-        `Group Link\\: ${ctx.chatJoinRequest}`,
+        `Group Name\\: ${(chatInfo).first_name}`,
+        `Group Link\\: ${(chatInfo).invite_link}`,
         `Action\\: ${punishment.toUpperCase()}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
