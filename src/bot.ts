@@ -355,5 +355,14 @@ bot.catch((err) => {
   }
 });
 
-run(bot)
+const handle = run(bot);
+
+process.once("SIGINT", () => {
+  return handle.stop().then(() => {
+  })
+});
+process.once("SIGTERM", () => {
+  return handle.stop().then(() => {
+  })
+});
 
