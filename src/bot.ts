@@ -218,12 +218,14 @@ const punishUser = async (ctx: MyContext) => {
   if (ctx.session.userList.groupLogId != 0) {
     if (ctx.from) {
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
-        `Name: ${(ctx.from?.first_name)}`,
-        `Username: ${(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
-        `User ID: ${ctx.from?.id}`,
-        `User: ${getGrammyLink(ctx.from)}`,
-        `Action: ${punishment.toUpperCase()}`,
-      ].join('\n')).catch()
+        `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
+        `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
+        `User ID\\: ${ctx.from?.id}`,
+        `User\\: ${getGrammyNameLink(ctx.from)}`,
+        `Action\\: ${punishment.toUpperCase()}`,
+      ].join('\n'), {
+        parse_mode: "MarkdownV2"
+      }).catch()
     }
   }
   switch (punishment) {
