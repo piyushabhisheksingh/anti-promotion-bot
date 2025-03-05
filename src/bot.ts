@@ -14,13 +14,11 @@ import { SessionData } from "./schema/interfaces";
 
 // Create the bot.
 export type MyContext = Context & SessionFlavor<SessionData>;
-console.log(String(process.env.BOT_TOKEN))
 const bot = new Bot<MyContext>(String(process.env.BOT_TOKEN)); // <-- put your bot token between the ""
 
 const settingsMenu = new Menu<MyContext>("settings-menu")
 Punishments.forEach((action) => {
   settingsMenu.text((ctx) => action + (ctx.session.config.punishment == action ? " ✅" : ''), (ctx) => {
-    console.log(action)
     ctx.session.config.punishment = action
     ctx.menu.close()
   }).row()
@@ -273,7 +271,6 @@ const punishUser = async (ctx: MyContext) => {
 }
 
 bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended", ":video_chat_participants_invited"], async (ctx) => {
-  console.log("from", ctx.from)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
@@ -285,7 +282,6 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  console.log("com", member)
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
