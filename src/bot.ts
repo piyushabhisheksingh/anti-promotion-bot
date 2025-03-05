@@ -9,7 +9,7 @@ import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
-import { storage } from "./services/db";
+import { storage, storage2 } from "./services/db";
 import { SessionData } from "./schema/interfaces";
 
 // Create the bot.
@@ -63,7 +63,8 @@ bot.use(session({
   },
   config: {
     initial: () => { return { punishment: "warn" } },
-    getSessionKey: getChatSessionKey
+    getSessionKey: getChatSessionKey,
+    storage: storage2
   }
 }));
 
