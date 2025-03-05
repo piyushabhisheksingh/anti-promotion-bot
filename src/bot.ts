@@ -76,7 +76,7 @@ bot.use(session({
       }
     },
     getSessionKey: getChatSessionKey,
-    storage: freeStorage<any>(String(process.env.BOT_TOKEN))
+    // storage: freeStorage<any>(String(process.env.BOT_TOKEN))
   },
   config: {
     initial: () => { return { punishment: "kick" } },
