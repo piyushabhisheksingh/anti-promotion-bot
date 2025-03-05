@@ -291,6 +291,7 @@ const punishUser = async (ctx: MyContext) => {
 }
 
 bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members"], async (ctx) => {
+  console.log("from", ctx.from)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
@@ -345,7 +346,6 @@ bot.hears(/.*/, async (ctx) => {
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  console.log("hear", member)
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
