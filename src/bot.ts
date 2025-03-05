@@ -21,12 +21,14 @@ export interface USERLIST {
   groupLogId: number
 }
 
+export interface CONFIG {
+  punishment: string
+}
+
 
 export interface SessionData {
   userList: USERLIST,
-  config: {
-    punishment: string
-  }
+  config: CONFIG
 }
 
 // Create the bot.
@@ -290,7 +292,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended",":video_chat_participants_invited"], async (ctx) => {
+bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended", ":video_chat_participants_invited"], async (ctx) => {
   console.log("from", ctx.from)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
