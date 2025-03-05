@@ -302,6 +302,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message"], async 
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
+  console.log("com", member)
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
@@ -344,6 +345,7 @@ bot.hears(/.*/, async (ctx) => {
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
+  console.log("hear", member)
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
