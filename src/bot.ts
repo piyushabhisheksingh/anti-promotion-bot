@@ -16,9 +16,10 @@ import { Punishments } from "./schema/constants";
 
 export interface SessionData {
   userList: {
-    exceptionList: Array<User>
+    exceptionList: Array<number>
     warnList: Array<{
       id: number,
+      count: number,
       warnedAt: number
     }>
     groupLogId: number
@@ -74,7 +75,8 @@ bot.use(session({
         groupLogId: 2371255392
       }
     },
-    getSessionKey: getChatSessionKey
+    getSessionKey: getChatSessionKey,
+    storage: freeStorage<any>(String(process.env.BOT_TOKEN))
   },
   config: {
     initial: () => { return { punishment: "kick" } },
@@ -164,6 +166,8 @@ bot.command("help", (ctx) => {
   const msgArr = [
     "-/setpunish <action>: to set punishment. Action - kick/ban/warn.",
     "-/setlog <groupID>: to set punishment.",
+    "-/free <userID>: to add user to whitelist.",
+    "-/unfree <userID>: to remove user from whitelist.",
   ]
   replytoMsg({
     ctx,
@@ -180,6 +184,39 @@ bot.command("setpunish", async (ctx) => {
       ctx.session.config.punishment = ctx.match.trim()
       ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
+    }
+  }
+})
+
+bot.command("free", async (ctx) => {
+  const admins = await ctx.api.getChatAdministrators(ctx.chatId)
+  const admin = admins.find((user) => user.user.id == ctx.from?.id)
+  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
+  if (admin) {
+    if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
+      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
+      ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
+      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      replytoMsg({
+        ctx,
+        message: `User is added to whitelist`
+      })
+    }
+  }
+})
+
+bot.command("unfree", async (ctx) => {
+  const admins = await ctx.api.getChatAdministrators(ctx.chatId)
+  const admin = admins.find((user) => user.user.id == ctx.from?.id)
+  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
+  if (admin) {
+    if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
+      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
+      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      replytoMsg({
+        ctx,
+        message: `User is removed from whitelist`
+      })
     }
   }
 })
@@ -254,6 +291,9 @@ const punishUser = async (ctx: MyContext) => {
 }
 
 bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message"], async (ctx) => {
+  if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
+    return
+  }
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -293,6 +333,9 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message"], async 
 })
 
 bot.hears(/.*/, async (ctx) => {
+  if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
+    return
+  }
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -333,10 +376,11 @@ bot.hears(/.*/, async (ctx) => {
 })
 
 
-bot.api.deleteMyCommands()
 bot.api.setMyCommands([
   { command: "setpunish", description: "set punishment" },
   { command: "setlog", description: "set logs to logger group" },
+  { command: "free", description: "add user to whitelist" },
+  { command: "unfree", description: "remove user from whitelist" },
   { command: "help", description: "settings help" }
 ]);
 
