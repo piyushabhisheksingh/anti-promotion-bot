@@ -79,7 +79,7 @@ bot.use(session({
     storage: storage
   },
   config: {
-    initial: () => { return { punishment: "kick" } },
+    initial: () => { return { punishment: "warn" } },
     getSessionKey: getChatSessionKey
   }
 }));
