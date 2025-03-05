@@ -270,7 +270,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.filter(ctx=> ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended", ":video_chat_participants_invited"], async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
