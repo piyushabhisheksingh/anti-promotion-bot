@@ -286,7 +286,9 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
-      || member.bio.toLowerCase().includes('http'))
+      || member.bio.toLowerCase().includes('http')
+      || member.bio.toLowerCase().includes('www')
+    )
   ) {
 
     punishUser(ctx)
@@ -299,7 +301,8 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
 
   } else if (
     ctx.message?.text?.toLowerCase().includes('t.me') ||
-    ctx.message?.text?.toLowerCase().includes('http')
+    ctx.message?.text?.toLowerCase().includes('http') ||
+    ctx.message?.text?.toLowerCase().includes('www')
 
   ) {
     punishUser(ctx)
@@ -328,7 +331,9 @@ bot.hears(/.*/, async (ctx) => {
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
-      || member.bio.toLowerCase().includes('http'))
+      || member.bio.toLowerCase().includes('http')
+      || member.bio.toLowerCase().includes('www')
+    )
   ) {
     await ctx.deleteMessage().catch()
     punishUser(ctx)
@@ -341,7 +346,8 @@ bot.hears(/.*/, async (ctx) => {
 
   } else if (
     ctx.message?.text?.toLowerCase().includes('t.me') ||
-    ctx.message?.text?.toLowerCase().includes('http')
+    ctx.message?.text?.toLowerCase().includes('http') ||
+    ctx.message?.text?.toLowerCase().includes('www')
 
   ) {
     await ctx.deleteMessage().catch()
