@@ -174,13 +174,12 @@ bot.command("help", (ctx) => {
 bot.command("setpunish", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
+  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.config.punishment = ctx.match.trim()
-      replytoMsg({
-        ctx,
-        message: "Punishment set to " + ctx.match.trim()
-      })
+      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
     }
   }
 })
@@ -188,13 +187,12 @@ bot.command("setpunish", async (ctx) => {
 bot.command("setlog", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
+  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.groupLogId = Number(ctx.match.trim())
-      replytoMsg({
-        ctx,
-        message: "Logs redirected to " + ctx.match.trim()
-      })
+      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Logs redirected for group " + escapeMetaCharacters(chatInfo.title ?? ''), { parse_mode: "MarkdownV2" })
     }
   }
 })
