@@ -6,7 +6,7 @@ import { autoRetry } from "@grammyjs/auto-retry";
 import { limit } from "@grammyjs/ratelimiter";
 import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
-import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
+import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replyMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
 import { storage, storage2 } from "./services/db";
@@ -151,7 +151,7 @@ bot.command("help", (ctx) => {
     "-/free <userID>: to add user to whitelist.",
     "-/unfree <userID>: to remove user from whitelist.",
   ]
-  replytoMsg({
+  replyMsg({
     ctx,
     message: msgArr.join('\n')
   })
@@ -178,7 +178,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("free", async (ctx) => {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
       ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
       ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
-      replytoMsg({
+      replyMsg({
         ctx,
         message: `User is added to whitelist`
       })
@@ -193,7 +193,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("unfree", async (ctx) => {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
       ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
-      replytoMsg({
+      replyMsg({
         ctx,
         message: `User is removed from whitelist`
       })

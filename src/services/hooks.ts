@@ -25,6 +25,11 @@ export const replytoMsg = async ({ ctx, message, replyMarkup, msgID }: { ctx: My
 
   return await ctx.reply(message, { reply_markup: replyMarkup, reply_parameters: { message_id: msgID ?? ctx.msgId ?? 0 } })
 }
+export const replyMsg = async ({ ctx, message, replyMarkup, msgID }: { ctx: MyContext, message: string, replyMarkup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply, msgID?: number }) => {
+
+  return await ctx.reply(message, { reply_markup: replyMarkup})
+}
+
 export const replytoMsgMarkdownV2 = async ({ ctx, message, replyMarkup }: { ctx: MyContext, message: string, replyMarkup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply; }) => {
 
   return await ctx.reply(message, { reply_markup: replyMarkup, parse_mode: "MarkdownV2", reply_parameters: { message_id: ctx.msgId ?? 0 } })
