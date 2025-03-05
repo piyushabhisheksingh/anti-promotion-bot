@@ -285,12 +285,10 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
-      || member.bio.toLowerCase().includes('@')
       || member.bio.toLowerCase().includes('http')
       || member.bio.toLowerCase().includes('www')
     )
   ) {
-
     punishUser(ctx)
     if (ctx.from) {
       await replyMarkdownV2({
@@ -299,7 +297,35 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
       }).catch()
     }
 
-  } else if (
+  }
+  else if (member.bio &&
+    (
+      member.bio.toLowerCase().includes('@')
+    )
+  ) {
+    const bioUsernames = member.bio.replace('\t', ' ').replace('\n', ' ').replace('  ', ' ').split(' ').filter((word) => word.includes('@'))
+    let isPunish = false
+    if (bioUsernames[0]) {
+      bioUsernames.forEach(async (bioUsername) => {
+        const bioUsernameInfo = await ctx.api.getChat(bioUsername).catch()
+        if (bioUsernameInfo) {
+          if (bioUsernameInfo.id < 0) {
+            isPunish = true;
+          }
+        }
+      })
+      if (isPunish) {
+        punishUser(ctx)
+        if (ctx.from) {
+          await replyMarkdownV2({
+            ctx,
+            message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, remove link from your bio to enable chat\\! or contact admins\\.`
+          }).catch()
+        }
+      }
+    }
+  }
+  else if (
     ctx.message?.text?.toLowerCase().includes('t.me') ||
     ctx.message?.text?.toLowerCase().includes('http') ||
     ctx.message?.text?.toLowerCase().includes('www')
@@ -330,7 +356,6 @@ bot.hears(/.*/, async (ctx) => {
   if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
-      || member.bio.toLowerCase().includes('@')
       || member.bio.toLowerCase().includes('http')
       || member.bio.toLowerCase().includes('www')
     )
@@ -344,6 +369,32 @@ bot.hears(/.*/, async (ctx) => {
       }).catch()
     }
 
+  } else if (member.bio &&
+    (
+      member.bio.toLowerCase().includes('@')
+    )
+  ) {
+    const bioUsernames = member.bio.replace('\t', ' ').replace('\n', ' ').replace('  ', ' ').split(' ').filter((word) => word.includes('@'))
+    let isPunish = false
+    if (bioUsernames[0]) {
+      bioUsernames.forEach(async (bioUsername) => {
+        const bioUsernameInfo = await ctx.api.getChat(bioUsername).catch()
+        if (bioUsernameInfo) {
+          if (bioUsernameInfo.id < 0) {
+            isPunish = true;
+          }
+        }
+      })
+      if (isPunish) {
+        punishUser(ctx)
+        if (ctx.from) {
+          await replyMarkdownV2({
+            ctx,
+            message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, remove link from your bio to enable chat\\! or contact admins\\.`
+          }).catch()
+        }
+      }
+    }
   } else if (
     ctx.message?.text?.toLowerCase().includes('t.me') ||
     ctx.message?.text?.toLowerCase().includes('http') ||
