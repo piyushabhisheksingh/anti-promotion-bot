@@ -379,10 +379,10 @@ bot.hears(/.*/, async (ctx) => {
 
 
 bot.api.setMyCommands([
-  { command: "setpunish", description: "set punishment" },
-  { command: "setlog", description: "set logs to logger group" },
-  { command: "free", description: "add user to whitelist" },
-  { command: "unfree", description: "remove user from whitelist" },
+  { command: "setpunish", description: "to set punishment" },
+  { command: "setlog", description: "to set logs" },
+  { command: "free", description: "to set free from bot actions" },
+  { command: "unfree", description: "to remove user from whitelist" },
   { command: "help", description: "settings help" }
 ]);
 
