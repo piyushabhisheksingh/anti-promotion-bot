@@ -1,6 +1,7 @@
 import { supabaseAdapter } from "@grammyjs/storage-supabase";
 import { createClient } from '@supabase/supabase-js';
-import { CONFIG, USERLIST } from "../bot";
+import { CONFIG, USERLIST } from "../schema/interfaces";
+
 
 
 const TableName = 'session'

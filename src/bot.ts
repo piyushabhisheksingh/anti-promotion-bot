@@ -10,26 +10,7 @@ import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } 
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
 import { storage } from "./services/db";
-
-export interface USERLIST {
-  exceptionList: Array<number>
-  warnList: Array<{
-    id: number,
-    count: number,
-    warnedAt: number
-  }>
-  groupLogId: number
-}
-
-export interface CONFIG {
-  punishment: string
-}
-
-
-export interface SessionData {
-  userList: USERLIST,
-  config: CONFIG
-}
+import { SessionData } from "./schema/interfaces";
 
 // Create the bot.
 export type MyContext = Context & SessionFlavor<SessionData>;
@@ -193,7 +174,6 @@ bot.command("setpunish", async (ctx) => {
 bot.command("free", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
-  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
@@ -210,7 +190,6 @@ bot.command("free", async (ctx) => {
 bot.command("unfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
-  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
@@ -380,13 +359,13 @@ bot.hears(/.*/, async (ctx) => {
 })
 
 
-bot.api.setMyCommands([
-  { command: "setpunish", description: "to set punishment" },
-  { command: "setlog", description: "to set logs" },
-  { command: "free", description: "to set free from bot actions" },
-  { command: "unfree", description: "to remove user from whitelist" },
-  { command: "help", description: "settings help" }
-]);
+// bot.api.setMyCommands([
+//   { command: "setpunish", description: "to set punishment" },
+//   { command: "setlog", description: "to set logs" },
+//   { command: "free", description: "to set free from bot actions" },
+//   { command: "unfree", description: "to remove user from whitelist" },
+//   { command: "help", description: "settings help" }
+// ]);
 
 // catch Errors
 bot.catch((err) => {
