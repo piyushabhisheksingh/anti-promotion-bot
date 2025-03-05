@@ -157,7 +157,7 @@ bot.command("help", (ctx) => {
   })
 })
 
-bot.command("setpunish", async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').command("setpunish", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -170,7 +170,7 @@ bot.command("setpunish", async (ctx) => {
   }
 })
 
-bot.command("free", async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').command("free", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -186,7 +186,7 @@ bot.command("free", async (ctx) => {
   }
 })
 
-bot.command("unfree", async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').command("unfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -201,7 +201,7 @@ bot.command("unfree", async (ctx) => {
   }
 })
 
-bot.command("setlog", async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').command("setlog", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -270,7 +270,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended", ":video_chat_participants_invited"], async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:new_chat_members", "edit:new_chat_members", "message:new_chat_members", "edited_message:new_chat_members", "business_message:new_chat_members", "edited_business_message:new_chat_members", ":video_chat_started", ":video_chat_ended", ":video_chat_participants_invited"], async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
@@ -341,7 +341,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member", "message", "msg:ne
   }
 })
 
-bot.hears(/.*/, async (ctx) => {
+bot.filter(ctx=> ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
