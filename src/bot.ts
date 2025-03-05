@@ -164,7 +164,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("setpunish", async (ctx) =
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.config.punishment = ctx.match.trim()
-      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
     }
   }
@@ -177,7 +177,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("free", async (ctx) => {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
       ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
-      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
         message: `User is added to whitelist`
@@ -192,7 +192,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("unfree", async (ctx) => {
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
-      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
         message: `User is removed from whitelist`
@@ -208,7 +208,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("setlog", async (ctx) => {
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.groupLogId = Number(ctx.match.trim())
-      ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+      // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Logs redirected for group " + escapeMetaCharacters(chatInfo.title ?? ''), { parse_mode: "MarkdownV2" })
     }
   }
@@ -335,7 +335,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
       || member.bio.toLowerCase().includes('www')
     )
   ) {
-    await ctx.deleteMessage().catch()
+    ctx.deleteMessage().catch()
     punishUser(ctx)
     if (ctx.from) {
       await replyMarkdownV2({
@@ -350,7 +350,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     ctx.message?.text?.toLowerCase().includes('www')
 
   ) {
-    await ctx.deleteMessage().catch()
+    ctx.deleteMessage().catch()
     punishUser(ctx)
     if (ctx.from) {
       await replyMarkdownV2({
