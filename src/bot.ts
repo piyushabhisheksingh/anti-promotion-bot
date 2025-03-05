@@ -6,24 +6,24 @@ import { autoRetry } from "@grammyjs/auto-retry";
 import { limit } from "@grammyjs/ratelimiter";
 import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
-import { User } from "grammy/types";
-import { escapeMetaCharacters, getGrammyLink, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
-import { freeStorage } from "@grammyjs/storage-free";
+import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replytoMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
 import { Punishments } from "./schema/constants";
+import { storage } from "./services/db";
 
+export interface USERLIST {
+  exceptionList: Array<number>
+  warnList: Array<{
+    id: number,
+    count: number,
+    warnedAt: number
+  }>
+  groupLogId: number
+}
 
 
 export interface SessionData {
-  userList: {
-    exceptionList: Array<number>
-    warnList: Array<{
-      id: number,
-      count: number,
-      warnedAt: number
-    }>
-    groupLogId: number
-  }
+  userList: USERLIST,
   config: {
     punishment: string
   }
@@ -76,7 +76,7 @@ bot.use(session({
       }
     },
     getSessionKey: getChatSessionKey,
-    // storage: freeStorage<any>(String(process.env.BOT_TOKEN))
+    storage: storage
   },
   config: {
     initial: () => { return { punishment: "kick" } },
