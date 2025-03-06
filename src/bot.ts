@@ -335,7 +335,6 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
       return
     }
   }
-  console.log(ctx.api.token)
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
   if (member.bio &&
     (
