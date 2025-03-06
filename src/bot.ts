@@ -410,13 +410,13 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
 })
 
 
-// bot.api.setMyCommands([
-//   { command: "setpunish", description: "to set punishment" },
-//   { command: "setlog", description: "to set logs" },
-//   { command: "free", description: "to set free from bot actions" },
-//   { command: "unfree", description: "to remove user from whitelist" },
-//   { command: "help", description: "settings help" }
-// ]);
+bot.api.setMyCommands([
+  { command: "setpunish", description: "<ban/kick/warn> to set punishment"},
+  { command: "setlog", description: "<logger GroupID>to set logs" },
+  { command: "free", description: "<userID>to set free from bot actions" },
+  { command: "unfree", description: "<userID>to remove user from whitelist" },
+  { command: "help", description: "settings help" }
+]);
 
 // catch Errors
 bot.catch((err) => {
