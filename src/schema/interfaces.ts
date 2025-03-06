@@ -9,7 +9,8 @@ export interface USERLIST {
 }
 
 export interface CONFIG {
-  punishment: string
+  punishment: string,
+  isLogged: boolean
 }
 
 

