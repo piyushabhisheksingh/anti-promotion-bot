@@ -6,7 +6,7 @@ import { autoRetry } from "@grammyjs/auto-retry";
 import { limit } from "@grammyjs/ratelimiter";
 import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
-import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replyMsg } from "./services/hooks";
+import { escapeMetaCharacters, getGrammyName, getGrammyNameLink, replyMarkdownV2, replyMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
 import { msgArr, Punishments, startMsg } from "./schema/constants";
 import { storage, storage2 } from "./services/db";
@@ -166,7 +166,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.config.punishment = ctx.match.trim()
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
-      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
+      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for the group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
       replyMsg({
         ctx,
         message: `Punishment set for the group is ${ctx.match.trim()}`
@@ -185,7 +185,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
-        message: `User is added to whitelist and is now free from bot actions.`
+        message: `User is added to the whitelist and is now free from the bot actions.`
       })
     }
   }
@@ -214,7 +214,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.groupLogId = Number(ctx.match.trim())
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
-      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Logs redirected for group " + escapeMetaCharacters(chatInfo.title ?? ''), { parse_mode: "MarkdownV2" })
+      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Logs redirected for the group " + escapeMetaCharacters(chatInfo.title ?? ''), { parse_mode: "MarkdownV2" })
       replyMsg({
         ctx,
         message: `Logs are now redirected to the logger group.`
@@ -302,9 +302,9 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
 
     punishUser(ctx)
     if (ctx.from) {
-      await replyMarkdownV2({
+      await replyMsg({
         ctx,
-        message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, remove link from your bio to enable chat\\! or contact admins\\.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins.`
       }).catch()
     }
 
@@ -316,9 +316,9 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
   ) {
     punishUser(ctx)
     if (ctx.from) {
-      await replyMarkdownV2({
+      await replyMsg({
         ctx,
-        message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, do not post links\\! or contact admins\\.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins.`
       }).catch()
     }
   }
@@ -347,9 +347,9 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     ctx.deleteMessage().catch()
     punishUser(ctx)
     if (ctx.from) {
-      await replyMarkdownV2({
+      await replyMsg({
         ctx,
-        message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, remove link from your bio to enable chat\\! or contact admins\\.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins.`
       }).catch()
     }
 
@@ -362,9 +362,9 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     ctx.deleteMessage().catch()
     punishUser(ctx)
     if (ctx.from) {
-      await replyMarkdownV2({
+      await replyMsg({
         ctx,
-        message: `${getGrammyNameLink(ctx.from)}\\(${ctx.from.id}\\)\\, do not post links\\! or contact admins\\.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins.`
       }).catch()
     }
   }

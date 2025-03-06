@@ -21,6 +21,10 @@ export const getGrammyLink = (user: User) => {
   return `tg://user?id=${user.id}`
 }
 
+export const getGrammyName = (user: User) => {
+  return `${user.first_name.length ? (user.first_name + " " + (user.last_name ?? "")) : user.username?.length ? `@${user.username}` : user.id ? user.id.toString() : ""}`
+}
+
 export const replytoMsg = async ({ ctx, message, replyMarkup, msgID }: { ctx: MyContext, message: string, replyMarkup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply, msgID?: number }) => {
 
   return await ctx.reply(message, { reply_markup: replyMarkup, reply_parameters: { message_id: msgID ?? ctx.msgId ?? 0 } })

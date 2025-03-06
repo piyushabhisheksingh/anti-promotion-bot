@@ -22,3 +22,11 @@ export const storage2 = supabaseAdapter<CONFIG>({
   supabase,
   table: TableName2, // the defined table name you want to use to store your session
 });
+
+export const readAll = async () => {
+  const { data, error } = await supabase.from(TableName2).select('id');
+  if (error || !data) {
+    return undefined
+  }
+  return data.map(item => JSON.parse(item.id)) as Array<Number>
+}
