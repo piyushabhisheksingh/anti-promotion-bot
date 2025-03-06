@@ -167,6 +167,10 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
       ctx.session.config.punishment = ctx.match.trim()
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
+      replyMsg({
+        ctx,
+        message: `Punishment set for the group is ${ctx.match.trim()}`
+      })
     }
   }
 })
@@ -196,7 +200,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("unfree", async (ctx) => 
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
-        message: `User is removed from whitelist and is now bot is monitoring the user.`
+        message: `User is removed from the whitelist and now bot is monitoring the user.`
       })
     }
   }
@@ -211,6 +215,10 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
       ctx.session.userList.groupLogId = Number(ctx.match.trim())
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Logs redirected for group " + escapeMetaCharacters(chatInfo.title ?? ''), { parse_mode: "MarkdownV2" })
+      replyMsg({
+        ctx,
+        message: `Logs are now redirected to the logger group.`
+      })
     }
   }
 })
