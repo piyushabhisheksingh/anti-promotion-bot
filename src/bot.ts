@@ -70,18 +70,18 @@ bot.use(session({
 const globalConfig = {
   maxConcurrent: 2,
   minTime: 200,
-  highWater: 29,
+  highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
-  reservoir: 29,
+  reservoir: 58,
   penalty: 3000,
-  reservoirRefreshAmount: 29,
+  reservoirRefreshAmount: 58,
   reservoirRefreshInterval: 5000,
 };
 
 // Outgoing Group Throttler
 const groupConfig = {
   maxConcurrent: 2,
-  minTime: 0,
+  minTime: 200,
   highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
   reservoir: 58,
@@ -94,11 +94,11 @@ const groupConfig = {
 const outConfig = {
   maxConcurrent: 2,
   minTime: 200,
-  highWater: 29,
+  highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
-  reservoir: 29,
+  reservoir: 58,
   penalty: 3000,
-  reservoirRefreshAmount: 29,
+  reservoirRefreshAmount: 58,
   reservoirRefreshInterval: 2000
 };
 
@@ -148,7 +148,7 @@ bot.command("help", (ctx) => {
   const msgArr = [
     "-/setpunish <action>: to set punishment. Action - kick/ban/warn.",
     "-/setlog <groupID>: to set logs.",
-    "-/free <userID>: to add user to whitelist.",
+    "-/free <userID>: to set free from bot actions.",
     "-/unfree <userID>: to remove user from whitelist.",
   ]
   replyMsg({
