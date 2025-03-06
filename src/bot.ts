@@ -172,7 +172,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
         message: `Punishment set for the group is ${ctx.match.trim()}`
       })
     }
-  }else{
+  } else {
     replyMsg({
       ctx,
       message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
@@ -193,7 +193,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
         message: `User is added to the whitelist and is now free from the bot actions.`
       })
     }
-  }else{
+  } else {
     replyMsg({
       ctx,
       message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
@@ -212,7 +212,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("unfree", async (ctx) => 
         ctx,
         message: `User is removed from the whitelist and now bot is monitoring the user.`
       })
-    }else{
+    } else {
       replyMsg({
         ctx,
         message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
@@ -234,7 +234,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
         ctx,
         message: `Logs are now redirected to the logger group.`
       })
-    }else{
+    } else {
       replyMsg({
         ctx,
         message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
@@ -265,7 +265,7 @@ const logGroup = async (ctx: MyContext) => {
       `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
       `Group ID\\: ${escapeMetaCharacters((chatInfo.id ?? 0).toString())}`,
       `Group Type\\: ${escapeMetaCharacters((chatInfo.type ?? 0).toString())}`,
-      `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? '').toString())}`,
+      `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
       `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
       `Group join by request\\: ${escapeMetaCharacters((chatInfo.join_by_request ?? '').toString())}`,
     ].join('\n'), {
@@ -286,7 +286,7 @@ const punishUser = async (ctx: MyContext) => {
         `User\\: ${getGrammyNameLink(ctx.from)}`,
         `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
         `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
-        `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? '').toString())}`,
+        `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
         `Action\\: ${punishment.toUpperCase()}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
@@ -411,7 +411,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
 
 
 bot.api.setMyCommands([
-  { command: "setpunish", description: "<ban/kick/warn> to set punishment"},
+  { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
   { command: "setlog", description: "<logger GroupID>to set logs" },
   { command: "free", description: "<userID>to set free from bot actions" },
   { command: "unfree", description: "<userID>to remove user from whitelist" },
@@ -434,7 +434,7 @@ bot.catch((err) => {
   }
 });
 
-const handle = run(bot);
+const handle = run(bot, { runner: { fetch: { allowed_updates: ["chat_member", "chat_join_request", "message", "my_chat_member", "business_message"] } } });
 
 process.once("SIGINT", () => {
   return handle.stop().then(() => {
