@@ -147,7 +147,7 @@ bot.api.config.use(autoRetry(
 bot.command("help", (ctx) => {
   const msgArr = [
     "-/setpunish <action>: to set punishment. Action - kick/ban/warn.",
-    "-/setlog <groupID>: to set punishment.",
+    "-/setlog <groupID>: to set logs.",
     "-/free <userID>: to add user to whitelist.",
     "-/unfree <userID>: to remove user from whitelist.",
   ]
@@ -326,6 +326,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
       return
     }
   }
+  console.log(ctx.api.token)
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
   if (member.bio &&
     (
