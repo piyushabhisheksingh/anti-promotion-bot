@@ -265,7 +265,7 @@ const punishUser = async (ctx: MyContext) => {
         `User\\: ${getGrammyNameLink(ctx.from)}`,
         `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
         `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
-        `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? 0).toString())}`,
+        `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? '').toString())}`,
         `Action\\: ${punishment.toUpperCase()}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
