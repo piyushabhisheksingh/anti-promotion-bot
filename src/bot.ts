@@ -8,7 +8,7 @@ import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { escapeMetaCharacters, getGrammyNameLink, replyMarkdownV2, replyMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
-import { Punishments } from "./schema/constants";
+import { msgArr, Punishments, startMsg } from "./schema/constants";
 import { storage, storage2 } from "./services/db";
 import { SessionData } from "./schema/interfaces";
 
@@ -144,20 +144,21 @@ bot.api.config.use(autoRetry(
   }
 ));
 
+bot.command("start", (ctx) => {
+  replyMsg({
+    ctx,
+    message: startMsg.join('\n')
+  })
+})
+
 bot.command("help", (ctx) => {
-  const msgArr = [
-    "-/setpunish <action>: to set punishment. Action - kick/ban/warn.",
-    "-/setlog <groupID>: to set logs.",
-    "-/free <userID>: to set free from bot actions.",
-    "-/unfree <userID>: to remove user from whitelist.",
-  ]
   replyMsg({
     ctx,
     message: msgArr.join('\n')
   })
 })
 
-bot.filter(ctx=> ctx.chat?.type != 'private').command("setpunish", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -170,7 +171,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("setpunish", async (ctx) =
   }
 })
 
-bot.filter(ctx=> ctx.chat?.type != 'private').command("free", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -180,13 +181,13 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("free", async (ctx) => {
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
-        message: `User is added to whitelist`
+        message: `User is added to whitelist and is now free from bot actions.`
       })
     }
   }
 })
 
-bot.filter(ctx=> ctx.chat?.type != 'private').command("unfree", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("unfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -195,13 +196,13 @@ bot.filter(ctx=> ctx.chat?.type != 'private').command("unfree", async (ctx) => {
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       replyMsg({
         ctx,
-        message: `User is removed from whitelist`
+        message: `User is removed from whitelist and is now bot is monitoring the user.`
       })
     }
   }
 })
 
-bot.filter(ctx=> ctx.chat?.type != 'private').command("setlog", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -270,7 +271,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.filter(ctx=> ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
@@ -315,7 +316,7 @@ bot.filter(ctx=> ctx.chat?.type != 'private').on(["chat_member", ":new_chat_memb
   }
 })
 
-bot.filter(ctx=> ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
