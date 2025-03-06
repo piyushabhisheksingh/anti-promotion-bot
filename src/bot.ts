@@ -172,6 +172,11 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
         message: `Punishment set for the group is ${ctx.match.trim()}`
       })
     }
+  }else{
+    replyMsg({
+      ctx,
+      message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
+    })
   }
 })
 
@@ -188,6 +193,11 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
         message: `User is added to the whitelist and is now free from the bot actions.`
       })
     }
+  }else{
+    replyMsg({
+      ctx,
+      message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
+    })
   }
 })
 
@@ -201,6 +211,11 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("unfree", async (ctx) => 
       replyMsg({
         ctx,
         message: `User is removed from the whitelist and now bot is monitoring the user.`
+      })
+    }else{
+      replyMsg({
+        ctx,
+        message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
       })
     }
   }
@@ -218,6 +233,11 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
       replyMsg({
         ctx,
         message: `Logs are now redirected to the logger group.`
+      })
+    }else{
+      replyMsg({
+        ctx,
+        message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
       })
     }
   }
