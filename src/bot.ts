@@ -245,7 +245,7 @@ const logGroup = async (ctx: MyContext) => {
       `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
       `Group ID\\: ${escapeMetaCharacters((chatInfo.id ?? 0).toString())}`,
       `Group Type\\: ${escapeMetaCharacters((chatInfo.type ?? 0).toString())}`,
-      `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? 0).toString())}`,
+      `Group Username\\: ${escapeMetaCharacters((chatInfo.username ?? '').toString())}`,
       `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
     ].join('\n'), {
       parse_mode: "MarkdownV2"
