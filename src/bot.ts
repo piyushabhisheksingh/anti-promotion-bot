@@ -434,7 +434,7 @@ bot.catch((err) => {
   }
 });
 
-const handle = run(bot, { runner: { fetch: { allowed_updates: ["chat_member", "chat_join_request", "message", "my_chat_member", "business_message"] } } });
+const handle = run(bot);
 
 process.once("SIGINT", () => {
   return handle.stop().then(() => {
