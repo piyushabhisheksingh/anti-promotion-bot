@@ -383,7 +383,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
       || member.bio.toLowerCase().includes('www')
     )
   ) {
-    ctx.deleteMessage().catch()
+    ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
     punishUser(ctx)
     if (ctx.from) {
       await replyMsg({
@@ -398,7 +398,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     ctx.message?.text?.toLowerCase().includes('www')
 
   ) {
-    ctx.deleteMessage().catch()
+    ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
     punishUser(ctx)
     if (ctx.from) {
       await replyMsg({
