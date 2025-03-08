@@ -164,6 +164,13 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
+      const action = ctx.match.trim().toLowerCase()
+      if(!Punishments.includes(action)){
+        return replyMsg({
+          ctx,
+          message: `Invalid Punishment. Punishment can be warn, ban or kick.`
+        })
+      }
       ctx.session.config.punishment = ctx.match.trim()
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, "Punishment set for the group " + escapeMetaCharacters(chatInfo.title ?? '') + ` is ${ctx.match.trim()}`, { parse_mode: "MarkdownV2" })
