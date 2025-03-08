@@ -370,7 +370,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').hears(/(.|\n)*/, async (ctx) => {
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
