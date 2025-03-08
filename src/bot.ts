@@ -165,7 +165,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       const action = ctx.match.trim().toLowerCase()
-      if(!Punishments.includes(action)){
+      if (!Punishments.includes(action)) {
         return replyMsg({
           ctx,
           message: `Invalid Punishment. Punishment can be warn, ban or kick.`
@@ -371,6 +371,9 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
 })
 
 bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
+  if (ctx.from?.is_bot) {
+    console.log(ctx.message?.text)
+  }
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
