@@ -332,12 +332,12 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
-    if (admin.status == 'creator' || (admin.status == 'administrator')) {
+    if (admin.status == 'creator' || (admin.status == 'administrator' && !ctx.from?.is_bot)) {
       return
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  if (member.bio &&
+  if (member.bio && !ctx.from?.is_bot &&
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
@@ -350,7 +350,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
     if (ctx.from) {
       await replyMsg({
         ctx,
-        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
       }).catch()
     }
 
@@ -364,7 +364,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
     if (ctx.from) {
       await replyMsg({
         ctx,
-        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins to get into exception list.`
       }).catch()
     }
   }
@@ -377,12 +377,12 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
-    if (admin.status == 'creator' || (admin.status == 'administrator')) {
+    if (admin.status == 'creator' || (admin.status == 'administrator' && !ctx.from?.is_bot)) {
       return
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  if (member.bio &&
+  if (member.bio && !ctx.from?.is_bot &&
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
@@ -395,7 +395,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     if (ctx.from) {
       await replyMsg({
         ctx,
-        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
       }).catch()
     }
 
@@ -410,7 +410,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
     if (ctx.from) {
       await replyMsg({
         ctx,
-        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins.`
+        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins to get into exception list.`
       }).catch()
     }
   }
