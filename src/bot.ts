@@ -165,7 +165,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       const action = ctx.match.trim().toLowerCase()
-      if (!Punishments.includes(action)) {
+      if(!Punishments.includes(action)){
         return replyMsg({
           ctx,
           message: `Invalid Punishment. Punishment can be warn, ban or kick.`
@@ -332,12 +332,12 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
-    if (admin.status == 'creator' || (admin.status == 'administrator' && !ctx.from?.is_bot)) {
+    if (admin.status == 'creator' || (admin.status == 'administrator')) {
       return
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  if (member.bio && !ctx.from?.is_bot &&
+  if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
@@ -371,21 +371,18 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
 })
 
 bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
-  if (ctx.from?.is_bot) {
-    console.log(ctx.message?.text)
-  }
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
   }
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
-    if (admin.status == 'creator' || (admin.status == 'administrator' && !ctx.from?.is_bot)) {
+    if (admin.status == 'creator' || (admin.status == 'administrator')) {
       return
     }
   }
   const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch()
-  if (member.bio && !ctx.from?.is_bot &&
+  if (member.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
       || member.bio.toLowerCase().includes('@')
