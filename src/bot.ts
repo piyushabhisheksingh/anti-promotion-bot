@@ -232,7 +232,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
-  if (admin) {
+  if (admin && chatInfo) {
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       ctx.session.userList.groupLogId = Number(ctx.match.trim())
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
