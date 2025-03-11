@@ -2,7 +2,7 @@ import { ForceReply, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRem
 import { MyContext } from "../bot";
 
 export const escapeMetaCharacters = (inputString: string) => {
-  const metaCharacters = ["^", "$", "{", "}", "[", "]", "(", ")", ".", "*", "+", "?", "|", "<", ">", "-", "&", "%", "=", "!", "_", "#", "@", "~"];
+  const metaCharacters = ["^", "$", "{", "}", "[", "]", "(", ")", ".", "*", "+", "?", "|", "<", ">", "-", "&", "%", "=", "!", "_", "#", "@", "~","`"];
   let modString = inputString;
   modString = modString.split("").map((item) => {
     let itm = item;
