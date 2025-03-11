@@ -187,7 +187,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -208,7 +208,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("free", async (ctx) => {
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').command("unfree", async (ctx) => {
+bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -416,12 +416,12 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
   }
 })
 
-
+bot.api.deleteMyCommands()
 bot.api.setMyCommands([
   { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
   { command: "setlog", description: "<logger GroupID>to set logs" },
-  { command: "free", description: "<userID>to set free from bot actions" },
-  { command: "unfree", description: "<userID>to remove user from whitelist" },
+  { command: "setfree", description: "<userID>to set free from bot actions" },
+  { command: "setunfree", description: "<userID>to remove user from whitelist" },
   { command: "help", description: "settings help" }
 ]);
 

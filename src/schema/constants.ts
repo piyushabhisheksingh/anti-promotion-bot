@@ -10,6 +10,6 @@ export const startMsg = [
 export const msgArr = [
   "-/setpunish <action>: to set punishment use this command in your group. Action - kick/ban/warn. If any member violates then bot will automatically take the action which was set using this command.",
   "-/setlog <groupID>: to set logs of the bot actions from your group to the logger group. Create a logger group. Copy the ID of the logger group. Go to your group and use this command to set logs. Now you will be able to see the action logs in the logger group.",
-  "-/free <userID>: to set members free from bot actions use this command in your group. Admins of the group are free from bot actions.",
-  "-/unfree <userID>: to remove user from whitelist use this command in your group.",
+  "-/setfree <userID>: to set members free from bot actions use this command in your group. Admins of the group are free from bot actions.",
+  "-/setunfree <userID>: to remove user from whitelist use this command in your group.",
 ]
