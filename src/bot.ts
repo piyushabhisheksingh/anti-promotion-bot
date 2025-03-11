@@ -166,12 +166,12 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
     if (admin.status == 'creator' || (admin.status == 'administrator' && admin.can_change_info && admin.can_promote_members && admin.can_restrict_members)) {
       const action = ctx.match.trim().toLowerCase()
       if (!Punishments.includes(action)) {
-       const msg = await replyMsg({
+        const msg = await replyMsg({
           ctx,
           message: `Invalid Punishment. Punishment can be warn, ban or kick.`
         })
-        setTimeout(()=>{
-          ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+        setTimeout(() => {
+          ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
         }, 60000)
         return
       }
@@ -182,8 +182,8 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
         ctx,
         message: `Punishment set for the group is ${ctx.match.trim()}`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     }
   } else {
@@ -191,8 +191,8 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
       ctx,
       message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
     })
-    setTimeout(()=>{
-      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+    setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
     }, 60000)
   }
 })
@@ -209,8 +209,8 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) =>
         ctx,
         message: `User is added to the whitelist and is now free from the bot actions.`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     }
   } else {
@@ -218,8 +218,8 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) =>
       ctx,
       message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
     })
-    setTimeout(()=>{
-      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+    setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
     }, 60000)
   }
 })
@@ -235,18 +235,26 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) 
         ctx,
         message: `User is removed from the whitelist and now bot is monitoring the user.`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     } else {
       const msg = await replyMsg({
         ctx,
         message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     }
+  } else {
+    const msg = await replyMsg({
+      ctx,
+      message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
+    })
+    setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
+    }, 60000)
   }
 })
 
@@ -263,18 +271,26 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
         ctx,
         message: `Logs are now redirected to the logger group.`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     } else {
-      const msg= await replyMsg({
+      const msg = await replyMsg({
         ctx,
         message: `You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
       })
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     }
+  } else {
+    const msg = await replyMsg({
+      ctx,
+      message: `Invalid Log Group ID or You need admins rights with "Change group info rights", "Add admin rights", "Ban Rights" to perform this action.`
+    })
+    setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
+    }, 60000)
   }
 })
 
@@ -380,8 +396,8 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
         ctx,
         message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
       }).catch()
-      setTimeout(()=>{
-        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(()=>{})
+      setTimeout(() => {
+        ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
       }, 60000)
     }
 
