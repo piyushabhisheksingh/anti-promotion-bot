@@ -472,7 +472,6 @@ bot.filter(ctx => ctx.chat?.type != 'private').hears(/.*/, async (ctx) => {
   }
 })
 
-bot.api.deleteMyCommands()
 bot.api.setMyCommands([
   { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
   { command: "setlog", description: "<logger GroupID>to set logs" },
