@@ -13,3 +13,5 @@ export const msgArr = [
   "-/setfree <userID>: to set members free from bot actions use this command in your group. Admins of the group are free from bot actions.",
   "-/setunfree <userID>: to remove user from whitelist use this command in your group.",
 ]
+
+export const TimerLimit = 3 * 600000

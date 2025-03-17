@@ -8,7 +8,7 @@ import { apiThrottler } from "@grammyjs/transformer-throttler";
 import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { escapeMetaCharacters, getGrammyName, getGrammyNameLink, replyMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
-import { msgArr, Punishments, startMsg } from "./schema/constants";
+import { msgArr, Punishments, startMsg, TimerLimit } from "./schema/constants";
 import { storage, storage2 } from "./services/db";
 import { SessionData } from "./schema/interfaces";
 
@@ -172,7 +172,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
         })
         setTimeout(() => {
           ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-        }, 60000)
+        }, TimerLimit)
         return
       }
       ctx.session.config.punishment = ctx.match.trim()
@@ -184,7 +184,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   } else {
     const msg = await replyMsg({
@@ -193,7 +193,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
     })
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-    }, 60000)
+    }, TimerLimit)
   }
 })
 
@@ -211,7 +211,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) =>
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   } else {
     const msg = await replyMsg({
@@ -220,7 +220,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) =>
     })
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-    }, 60000)
+    }, TimerLimit)
   }
 })
 
@@ -237,7 +237,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) 
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     } else {
       const msg = await replyMsg({
         ctx,
@@ -245,7 +245,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) 
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   } else {
     const msg = await replyMsg({
@@ -254,7 +254,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) 
     })
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-    }, 60000)
+    }, TimerLimit)
   }
 })
 
@@ -273,7 +273,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     } else {
       const msg = await replyMsg({
         ctx,
@@ -281,7 +281,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
       })
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   } else {
     const msg = await replyMsg({
@@ -290,7 +290,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => 
     })
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-    }, 60000)
+    }, TimerLimit)
   }
 })
 
@@ -398,7 +398,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
       }).catch()
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
 
   } else if (
@@ -415,7 +415,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
       }).catch()
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   }
 })
@@ -451,7 +451,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["message"], async (ctx) => {
       }).catch()
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
 
   } else if (
@@ -469,7 +469,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["message"], async (ctx) => {
       }).catch()
       setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
-      }, 60000)
+      }, TimerLimit)
     }
   }
 })
