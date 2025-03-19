@@ -82,11 +82,11 @@ const globalConfig = {
 const groupConfig = {
   maxConcurrent: 2,
   minTime: 0,
-  highWater: 28,
+  highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
-  reservoir: 28,
+  reservoir: 58,
   penalty: 3000,
-  reservoirRefreshAmount: 28,
+  reservoirRefreshAmount: 58,
   reservoirRefreshInterval: 2000,
 };
 
@@ -94,11 +94,11 @@ const groupConfig = {
 const outConfig = {
   maxConcurrent: 2,
   minTime: 200,
-  highWater: 28,
+  highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
   reservoir: 58,
   penalty: 3000,
-  reservoirRefreshAmount: 28,
+  reservoirRefreshAmount: 58,
   reservoirRefreshInterval: 2000
 };
 
@@ -113,7 +113,7 @@ bot.api.config.use(throttler);
 bot.use(limit({
   // Allow only 5 messages to be handled every 2 seconds.
   timeFrame: 2000,
-  limit: 3,
+  limit: 5,
 
   // This is called when the limit is exceeded.
   onLimitExceeded: async (ctx) => {
