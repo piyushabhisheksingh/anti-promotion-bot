@@ -14,4 +14,4 @@ export const msgArr = [
   "-/setunfree <userID>: to remove user from whitelist use this command in your group.",
 ]
 
-export const TimerLimit = 3 * 600000
+export const TimerLimit = 1 * 600000
