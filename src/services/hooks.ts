@@ -1,5 +1,5 @@
 import { ForceReply, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, User } from "grammy/types";
-import { MyContext } from "../bot";
+import { MyContext } from "../worker";
 
 export const escapeMetaCharacters = (inputString: string) => {
   const metaCharacters = ["^", "$", "{", "}", "[", "]", "(", ")", ".", "*", "+", "?", "|", "<", ">", "-", "&", "%", "=", "!", "_", "#", "@", "~","`"];
