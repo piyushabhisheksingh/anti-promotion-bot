@@ -377,7 +377,7 @@ bot.command("stats", async (ctx) => {
     sessions = sessions.filter(item => item < 0)
     const stats = [
       `📊 Bot Statistics\n`,
-      `\t✅ Total Groups Stored in DB: ${sessions.length}`
+      `\t✅ Total groups: ${sessions.length}`
     ]
     ctx.reply(stats.join("\n"))
   }
