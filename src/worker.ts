@@ -9,7 +9,7 @@ import { Bottleneck } from "@grammyjs/transformer-throttler/dist/deps.node";
 import { escapeMetaCharacters, getGrammyName, getGrammyNameLink, replyMsg } from "./services/hooks";
 import { Menu } from "@grammyjs/menu";
 import { msgArr, Punishments, startMsg, TimerLimit } from "./schema/constants";
-import { storage, storage2 } from "./services/db";
+import { readAll, storage, storage2 } from "./services/db";
 import { SessionData } from "./schema/interfaces";
 
 const enabled = false
@@ -370,6 +370,19 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
+bot.filter(ctx => ctx.chat?.type == 'private').command("stats", async (ctx) => {
+
+  let sessions = await readAll()
+  if (sessions) {
+    sessions = sessions.filter(item => item < 0)
+    const stats = [
+      "📊 Bot Statistics",
+      `\t✅ Total Groups Stored in DB: ${sessions.length}`
+    ]
+    ctx.reply(stats.join("\n"))
+  }
+})
+
 bot.filter(ctx => ctx.chat?.type == 'private').command("ban", (ctx) => {
   if (ctx?.from?.id == 1632101837 && ctx.match) {
     ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch()
@@ -502,6 +515,7 @@ bot.api.setMyCommands([
   { command: "setlog", description: "<logger GroupID>to set logs" },
   { command: "setfree", description: "<userID>to set free from bot actions" },
   { command: "setunfree", description: "<userID>to remove user from whitelist" },
+  { command: "stats", description: "to know the bot stats" },
   { command: "help", description: "settings help" }
 ]);
 

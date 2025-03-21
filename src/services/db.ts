@@ -28,5 +28,5 @@ export const readAll = async () => {
   if (error || !data) {
     return undefined
   }
-  return data.map(item => JSON.parse(item.id)) as Array<Number>
+  return data.map(item => JSON.parse(item.id)) as Array<number>
 }
