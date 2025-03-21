@@ -199,7 +199,7 @@ bot.command("setpunish", async (ctx) => {
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) => {
+bot.command("setfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -226,7 +226,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setfree", async (ctx) =>
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) => {
+bot.command("setunfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -260,7 +260,7 @@ bot.filter(ctx => ctx.chat?.type != 'private').command("setunfree", async (ctx) 
   }
 })
 
-bot.filter(ctx => ctx.chat?.type != 'private').command("setlog", async (ctx) => {
+bot.command("setlog", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
