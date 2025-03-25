@@ -17,6 +17,8 @@ const enabled = false
 export type MyContext = Context & SessionFlavor<SessionData>;
 
 const bot = new BotWorker<MyContext>(String(process.env.BOT_TOKEN));
+const botPrivate = bot.filter(ctx => ctx.chat?.type != "private")
+
 
 const settingsMenu = new Menu<MyContext>("settings-menu")
 Punishments.forEach((action) => {
@@ -160,7 +162,7 @@ bot.command("help", (ctx) => {
   })
 })
 
-bot.command("setpunish", async (ctx) => {
+botPrivate.command("setpunish", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -199,7 +201,7 @@ bot.command("setpunish", async (ctx) => {
   }
 })
 
-bot.command("setfree", async (ctx) => {
+botPrivate.command("setfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -226,7 +228,7 @@ bot.command("setfree", async (ctx) => {
   }
 })
 
-bot.command("setunfree", async (ctx) => {
+botPrivate.command("setunfree", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
@@ -260,7 +262,7 @@ bot.command("setunfree", async (ctx) => {
   }
 })
 
-bot.command("setlog", async (ctx) => {
+botPrivate.command("setlog", async (ctx) => {
   const admins = await ctx.api.getChatAdministrators(ctx.chatId)
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
@@ -370,7 +372,7 @@ const punishUser = async (ctx: MyContext) => {
 
 }
 
-bot.command("stats", async (ctx) => {
+botPrivate.command("stats", async (ctx) => {
 
   let sessions = await readAll()
   if (sessions) {
@@ -404,7 +406,7 @@ bot.command("mute", (ctx) => {
   }
 })
 
-bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
+botPrivate.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   logGroup(ctx)
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
     return
@@ -456,7 +458,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   }
 })
 
-bot.on(["message"], async (ctx) => {
+botPrivate.on(["message"], async (ctx) => {
   if (ctx.from.is_bot) {
   }
   if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
@@ -510,14 +512,14 @@ bot.on(["message"], async (ctx) => {
   }
 })
 
-bot.api.setMyCommands([
-  { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
-  { command: "setlog", description: "<logger GroupID>to set logs" },
-  { command: "setfree", description: "<userID>to set free from bot actions" },
-  { command: "setunfree", description: "<userID>to remove user from whitelist" },
-  { command: "stats", description: "to know the bot stats" },
-  { command: "help", description: "settings help" }
-]);
+// bot.api.setMyCommands([
+//   { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
+//   { command: "setlog", description: "<logger GroupID>to set logs" },
+//   { command: "setfree", description: "<userID>to set free from bot actions" },
+//   { command: "setunfree", description: "<userID>to remove user from whitelist" },
+//   { command: "stats", description: "to know the bot stats" },
+//   { command: "help", description: "settings help" }
+// ]);
 
 // catch Errors
 bot.catch((err) => {
