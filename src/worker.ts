@@ -313,17 +313,21 @@ bot.command("setlog", async (ctx) => {
 const logGroup = async (ctx: MyContext) => {
   if (ctx.from && !ctx.session.config.isLogged) {
     ctx.session.config.isLogged = true
-    const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
-    ctx.api.sendMessage('-100' + "2236576514", [
-      `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
-      `Group ID\\: ${escapeMetaCharacters((chatInfo.id ?? 0).toString())}`,
-      `Group Type\\: ${escapeMetaCharacters((chatInfo.type ?? 0).toString())}`,
-      `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
-      `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
-      `Group join by request\\: ${escapeMetaCharacters((chatInfo.join_by_request ?? '').toString())}`,
-    ].join('\n'), {
-      parse_mode: "MarkdownV2"
-    }).catch(()=>{})
+    if(ctx.chatId != undefined && ctx.chatId < 0){
+      const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
+      ctx.api.sendMessage('-100' + "2236576514", [
+        `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
+        `Group ID\\: ${escapeMetaCharacters((chatInfo.id ?? 0).toString())}`,
+        `Group Type\\: ${escapeMetaCharacters((chatInfo.type ?? 0).toString())}`,
+        `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
+        `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
+        `Group join by request\\: ${escapeMetaCharacters((chatInfo.join_by_request ?? '').toString())}`,
+      ].join('\n'), {
+        parse_mode: "MarkdownV2"
+      }).catch(()=>{})
+
+    }
+
   }
 }
 
