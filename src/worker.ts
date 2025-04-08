@@ -62,7 +62,7 @@ bot.use(session({
     storage: storage
   },
   config: {
-    initial: () => { return { punishment: "mute", isLogged: false } },
+    initial: () => { return { punishment: "warn", isLogged: false } },
     getSessionKey: getChatSessionKey,
     storage: storage2
   }
