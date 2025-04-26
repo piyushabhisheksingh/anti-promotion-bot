@@ -204,6 +204,7 @@ bot.command("setfree", async (ctx) => {
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
     if (admin.status == 'creator' || admin.status == 'administrator') {
+      if(isNaN(Number(ctx.match.trim()))) return;
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
       ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
