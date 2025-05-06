@@ -399,14 +399,19 @@ bot.command("banall", async (ctx) => {
   if (sessions) {
     sessions.forEach((item) => {
       if (ctx?.from?.id == 1632101837 && ctx.match) {
-        ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
-          can_send_messages: false
-        }).then(() => {
-          console.log("muted from " + item)
-        }).catch(() => { })
-        ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
-          console.log("banned from " + item)
-        }).catch(() => { })
+        try {
+          ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
+            can_send_messages: false
+          }).then(() => {
+            console.log("muted from " + item)
+          }).catch(() => { })
+          ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
+            console.log("banned from " + item)
+          }).catch(() => { })
+        }
+        catch {
+
+        }
       }
     })
   }
