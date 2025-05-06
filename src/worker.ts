@@ -394,7 +394,7 @@ bot.command("ban", (ctx) => {
   }
 })
 
-bot.command("banall", async (ctx) => {
+bot.command("gban", async (ctx) => {
   let sessions = await readAll()
   if (sessions) {
     sessions.forEach((item) => {
