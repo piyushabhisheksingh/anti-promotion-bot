@@ -397,18 +397,20 @@ bot.command("ban", (ctx) => {
 bot.command("gban", async (ctx) => {
   let sessions = await readAll()
   if (sessions) {
-    sessions.forEach((item) => {
+    sessions.forEach((item, count) => {
       if (item < 0) {
         if (ctx?.from?.id == 1632101837 && ctx.match) {
           try {
-            ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
-              can_send_messages: false
-            }).then(() => {
-              console.log("muted from " + item)
-            }).catch(() => { })
-            ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
-              console.log("banned from " + item)
-            }).catch(() => { })
+            setTimeout(() => {
+              ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
+                can_send_messages: false
+              }).then(() => {
+                console.log("muted from " + item)
+              }).catch(() => { })
+              ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
+                console.log("banned from " + item)
+              }).catch(() => { })
+            }, count * 1000)
           }
           catch {
 
