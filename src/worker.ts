@@ -410,7 +410,7 @@ bot.command("gban", async (ctx) => {
               ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
                 console.log("banned from " + item)
               }).catch(() => { })
-            }, count * 1000)
+            }, count * 500)
           }
           catch {
 
