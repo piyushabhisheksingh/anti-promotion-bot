@@ -402,10 +402,10 @@ bot.command("banall", async (ctx) => {
         ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
           can_send_messages: false
         }).then(() => {
-          ctx.reply("muted from " + item)
+          console.log("muted from " + item)
         }).catch(() => { })
         ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
-          ctx.reply("banned from " + item)
+          console.log("banned from " + item)
         }).catch(() => { })
       }
     })
