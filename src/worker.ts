@@ -204,7 +204,7 @@ bot.command("setfree", async (ctx) => {
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
     if (admin.status == 'creator' || admin.status == 'administrator') {
-      if(isNaN(Number(ctx.match.trim()))) return;
+      if (isNaN(Number(ctx.match.trim()))) return;
       ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
       ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
@@ -314,7 +314,7 @@ bot.command("setlog", async (ctx) => {
 const logGroup = async (ctx: MyContext) => {
   if (ctx.from && !ctx.session.config.isLogged) {
     ctx.session.config.isLogged = true
-    if(ctx.chatId != undefined && ctx.chatId < 0){
+    if (ctx.chatId != undefined && ctx.chatId < 0) {
       const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
       ctx.api.sendMessage('-100' + "2236576514", [
         `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
@@ -325,7 +325,7 @@ const logGroup = async (ctx: MyContext) => {
         `Group join by request\\: ${escapeMetaCharacters((chatInfo.join_by_request ?? '').toString())}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
-      }).catch(()=>{})
+      }).catch(() => { })
 
     }
 
@@ -348,23 +348,23 @@ const punishUser = async (ctx: MyContext) => {
         `Action\\: ${punishment.toUpperCase()}`,
       ].join('\n'), {
         parse_mode: "MarkdownV2"
-      }).catch(()=>{})
+      }).catch(() => { })
     }
   }
   switch (punishment) {
     case "kick": {
-      await ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(()=>{})
-      await ctx.api.unbanChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(()=>{})
+      await ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
+      await ctx.api.unbanChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
       break;
     };
     case "ban": {
-      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(()=>{})
+      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
       break;
     };
     case "mute": {
       ctx.api.restrictChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0, {
         can_send_messages: false
-      }).catch(()=>{})
+      }).catch(() => { })
       break;
     }
     default: {
@@ -390,14 +390,32 @@ bot.command("stats", async (ctx) => {
 
 bot.command("ban", (ctx) => {
   if (ctx?.from?.id == 1632101837 && ctx.match) {
-    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(()=>{})
+    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(() => { })
+  }
+})
+
+bot.command("banall", async (ctx) => {
+  let sessions = await readAll()
+  if (sessions) {
+    sessions.forEach((item) => {
+      if (ctx?.from?.id == 1632101837 && ctx.match) {
+        ctx.api.restrictChatMember(item, Number(ctx.match.trim()), {
+          can_send_messages: false
+        }).then(() => {
+          ctx.reply("muted from " + item)
+        }).catch(() => { })
+        ctx.api.banChatMember(item, Number(ctx.match.trim())).then(() => {
+          ctx.reply("banned from " + item)
+        }).catch(() => { })
+      }
+    })
   }
 })
 
 bot.command("kick", (ctx) => {
   if (ctx?.from?.id == 1632101837 && ctx.match) {
-    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(()=>{})
-    ctx.api.unbanChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(()=>{})
+    ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(() => { })
+    ctx.api.unbanChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(() => { })
   }
 })
 
@@ -405,7 +423,7 @@ bot.command("mute", (ctx) => {
   if (ctx?.from?.id == 1632101837 && ctx.match) {
     ctx.api.restrictChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1]), {
       can_send_messages: false
-    }).catch(()=>{})
+    }).catch(() => { })
   }
 })
 
@@ -421,7 +439,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
       return
     }
   }
-  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(()=>{})
+  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(() => { })
   if (member?.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
@@ -436,7 +454,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
       const msg = await replyMsg({
         ctx,
         message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
-      }).catch(()=>{})
+      }).catch(() => { })
       enabled && setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
       }, TimerLimit)
@@ -453,7 +471,7 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
       const msg = await replyMsg({
         ctx,
         message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins to get into exception list.`
-      }).catch(()=>{})
+      }).catch(() => { })
       enabled && setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
       }, TimerLimit)
@@ -474,7 +492,7 @@ bot.on(["message"], async (ctx) => {
       return
     }
   }
-  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(()=>{})
+  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(() => { })
   if (member?.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
@@ -489,7 +507,7 @@ bot.on(["message"], async (ctx) => {
       const msg = await replyMsg({
         ctx,
         message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
-      }).catch(()=>{})
+      }).catch(() => { })
       enabled && setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
       }, TimerLimit)
@@ -507,7 +525,7 @@ bot.on(["message"], async (ctx) => {
       const msg = await replyMsg({
         ctx,
         message: `${getGrammyName(ctx.from)}[${ctx.from.id}], do not post links! or contact admins to get into exception list.`
-      }).catch(()=>{})
+      }).catch(() => { })
       enabled && setTimeout(() => {
         ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
       }, TimerLimit)
