@@ -545,14 +545,14 @@ bot.on(["message"], async (ctx) => {
   }
 })
 
-bot.api.setMyCommands([
-  { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
-  { command: "setlog", description: "<logger GroupID>to set logs" },
-  { command: "setfree", description: "<userID>to set free from bot actions" },
-  { command: "setunfree", description: "<userID>to remove user from whitelist" },
-  { command: "stats", description: "to know the bot stats" },
-  { command: "help", description: "settings help" }
-]);
+// bot.api.setMyCommands([
+//   { command: "setpunish", description: "<ban/kick/warn> to set punishment" },
+//   { command: "setlog", description: "<logger GroupID>to set logs" },
+//   { command: "setfree", description: "<userID>to set free from bot actions" },
+//   { command: "setunfree", description: "<userID>to remove user from whitelist" },
+//   { command: "stats", description: "to know the bot stats" },
+//   { command: "help", description: "settings help" }
+// ]);
 
 // catch Errors
 bot.catch((err) => {
