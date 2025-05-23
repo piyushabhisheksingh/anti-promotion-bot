@@ -388,6 +388,9 @@ bot.command("stats", async (ctx) => {
   }
 })
 
+bot.command(["play", "stop"], (ctx) => {
+})
+
 bot.command("ban", (ctx) => {
   if (ctx?.from?.id == 1632101837 && ctx.match) {
     ctx.api.banChatMember(ctx.match.split(' ')[0] ?? 0, Number(ctx.match.split(' ')[1])).catch(() => { })
