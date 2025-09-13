@@ -83,7 +83,7 @@ const globalConfig = {
 // Outgoing Group Throttler
 const groupConfig = {
   maxConcurrent: 2,
-  minTime: 0,
+  minTime: 200,
   highWater: 58,
   strategy: Bottleneck.strategy.LEAK,
   reservoir: 58,
@@ -110,6 +110,31 @@ const throttler = apiThrottler({
   out: outConfig
 });
 bot.api.config.use(throttler);
+
+// Helpers to avoid acting on invalid IDs
+const safeUserId = (ctx: Context): number | undefined => {
+  if (typeof ctx.from?.id === 'number') return ctx.from.id;
+  const upd: any = (ctx as any).update;
+  const id = upd?.chat_member?.new_chat_member?.user?.id ?? upd?.my_chat_member?.new_chat_member?.user?.id;
+  return typeof id === 'number' ? id : undefined;
+};
+
+const safeChatId = (ctx: Context): number | undefined => {
+  return typeof (ctx.chatId as number | undefined) === 'number' ? (ctx.chatId as number) : undefined;
+};
+
+// Map chat member status to a capitalized role label
+const roleLabel = (status?: string): string | undefined => {
+  switch (status) {
+    case 'creator': return 'Owner';
+    case 'administrator': return 'Administrator';
+    case 'member': return 'Member';
+    case 'restricted': return 'Restricted';
+    case 'left': return 'Left';
+    case 'kicked': return 'Kicked';
+    default: return undefined;
+  }
+};
 
 // Limits message handling to a message per second for each user.
 bot.use(limit({
@@ -205,7 +230,8 @@ bot.command("setfree", async (ctx) => {
   if (admin) {
     if (admin.status == 'creator' || admin.status == 'administrator') {
       if (isNaN(Number(ctx.match.trim()))) return;
-      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
+      // Remove if already present to avoid duplicates, then add
+      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id !== Number(ctx.match.trim()))
       ctx.session.userList.exceptionList = [...ctx.session.userList.exceptionList, Number(ctx.match.trim())]
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       const msg = await replyMsg({
@@ -232,7 +258,8 @@ bot.command("setunfree", async (ctx) => {
   const admin = admins.find((user) => user.user.id == ctx.from?.id)
   if (admin) {
     if (admin.status == 'creator' || (admin.status == 'administrator')) {
-      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id == Number(ctx.match.trim()))
+      // Remove specified user from whitelist
+      ctx.session.userList.exceptionList = ctx.session.userList.exceptionList.filter((id) => id !== Number(ctx.match.trim()))
       // ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
       const msg = await replyMsg({
         ctx,
@@ -334,35 +361,60 @@ const logGroup = async (ctx: MyContext) => {
 
 const punishUser = async (ctx: MyContext) => {
   const punishment = ctx.session.config.punishment
-  const chatInfo = await ctx.api.getChat(ctx.chatId ?? 0)
+  const chatId = safeChatId(ctx);
+  if (chatId === undefined) return;
+  const uid = safeUserId(ctx);
+  if (uid === undefined) return;
+  const chatInfo = await ctx.api.getChat(chatId)
   if (ctx.session.userList.groupLogId != 0) {
-    if (ctx.from) {
-      ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, [
-        `Name\\: ${escapeMetaCharacters(ctx.from?.first_name)}`,
-        `Username\\: ${escapeMetaCharacters(ctx.from?.username ? '@' + ctx.from?.username : '')}`,
-        `User ID\\: ${ctx.from?.id}`,
-        `User\\: ${getGrammyNameLink(ctx.from)}`,
-        `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
-        `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
-        `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
-        `Action\\: ${punishment.toUpperCase()}`,
-      ].join('\n'), {
-        parse_mode: "MarkdownV2"
-      }).catch(() => { })
+    const targetCM = await ctx.api.getChatMember(chatId, uid).catch(() => undefined)
+    const targetUser = targetCM?.user
+    const targetName = targetUser?.first_name ? escapeMetaCharacters(targetUser.first_name) : ''
+    const targetUsername = targetUser?.username ? '@' + targetUser.username : ''
+    const userLink = targetUser ? getGrammyNameLink(targetUser) : `${uid}`
+
+    // Determine acting admin/user (if any) different from target
+    const upd: any = (ctx as any).update;
+    const possibleActorId: number | undefined = upd?.chat_member?.from?.id ?? upd?.my_chat_member?.from?.id ?? ctx.from?.id;
+    let triggeredByLine = '';
+    if (possibleActorId && possibleActorId !== uid) {
+      // Try to resolve actor user and role
+      const actorCM = await ctx.api.getChatMember(chatId, possibleActorId).catch(() => undefined);
+      const actorUser = (ctx.from && ctx.from.id === possibleActorId) ? ctx.from : (actorCM?.user as any);
+      const actorLink = actorUser ? getGrammyNameLink(actorUser as any) : String(possibleActorId);
+      const roleName = roleLabel(actorCM?.status);
+      const role = roleName ? ` - ${roleName}` : '';
+      triggeredByLine = `Triggered by\\: ${actorLink}${role}`;
     }
+
+    const logs = [
+      `Name\\: ${targetName}`,
+      `Username\\: ${escapeMetaCharacters(targetUsername)}`,
+      `User ID\\: ${uid}`,
+      `User\\: ${userLink}`,
+      `Group Name\\: ${escapeMetaCharacters(chatInfo.title ?? '')}`,
+      `Group Link\\: ${escapeMetaCharacters((chatInfo).invite_link ?? '')}`,
+      `Group Username\\: ${escapeMetaCharacters(('@' + (chatInfo.username ?? '')).toString())}`,
+      `Action\\: ${punishment.toUpperCase()}`,
+    ];
+    if (triggeredByLine) logs.push(triggeredByLine);
+
+    ctx.api.sendMessage('-100' + ctx.session.userList.groupLogId, logs.join('\n'), {
+      parse_mode: "MarkdownV2"
+    }).catch(() => { })
   }
   switch (punishment) {
     case "kick": {
-      await ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
-      await ctx.api.unbanChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
+      await ctx.api.banChatMember(chatId, uid).catch(() => { })
+      await ctx.api.unbanChatMember(chatId, uid).catch(() => { })
       break;
     };
     case "ban": {
-      ctx.api.banChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0).catch(() => { })
+      ctx.api.banChatMember(chatId, uid).catch(() => { })
       break;
     };
     case "mute": {
-      ctx.api.restrictChatMember(ctx.chatId ?? 0, ctx.from?.id ?? 0, {
+      ctx.api.restrictChatMember(chatId, uid, {
         can_send_messages: false
       }).catch(() => { })
       break;
@@ -441,17 +493,17 @@ bot.command("mute", (ctx) => {
 
 bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   logGroup(ctx)
-  if (ctx.session.userList.exceptionList.includes(ctx.from?.id ?? 0)) {
+  const targetId = safeUserId(ctx);
+  if (!targetId) return;
+  if (ctx.session.userList.exceptionList.includes(targetId)) {
     return
   }
-  const admins = await ctx.api.getChatAdministrators(ctx.chatId)
-  const admin = admins.find((user) => user.user.id == ctx.from?.id)
-  if (admin) {
-    if (admin.status == 'creator' || (admin.status == 'administrator')) {
-      return
-    }
+  // Check the affected member's role (skip admins/owner)
+  const targetCM = await ctx.api.getChatMember(ctx.chatId ?? 0, targetId).catch(() => undefined)
+  if (targetCM && (targetCM.status == 'creator' || targetCM.status == 'administrator')) {
+    return
   }
-  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(() => { })
+  const member = await ctx.api.getChat(targetId).catch(() => { })
   if (member?.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
@@ -462,15 +514,14 @@ bot.on(["chat_member", ":new_chat_members", "my_chat_member"], async (ctx) => {
   ) {
 
     punishUser(ctx)
-    if (ctx.from) {
-      const msg = await replyMsg({
-        ctx,
-        message: `${getGrammyName(ctx.from)}[${ctx.from.id}], remove link from your bio to enable chat! or contact admins to get into exception list.`
-      }).catch(() => { })
-      enabled && setTimeout(() => {
-        ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
-      }, TimerLimit)
-    }
+    const displayName = targetCM ? getGrammyName(targetCM.user) : String(targetId)
+    const msg = await replyMsg({
+      ctx,
+      message: `${displayName}[${targetId}], remove link from your bio to enable chat! or contact admins to get into exception list.`
+    }).catch(() => { })
+    enabled && setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chatId, msg?.message_id ?? 0).catch(() => { })
+    }, TimerLimit)
 
   } else if (
     ctx.message?.text?.toLowerCase().includes('t.me') ||
@@ -504,7 +555,9 @@ bot.on(["message"], async (ctx) => {
       return
     }
   }
-  const member = await ctx.api.getChat(ctx.from?.id ?? 0).catch(() => { })
+  const fromIdB = safeUserId(ctx);
+  if (!fromIdB) return;
+  const member = await ctx.api.getChat(fromIdB).catch(() => { })
   if (member?.bio &&
     (
       member.bio.toLowerCase().includes('t.me')
@@ -513,7 +566,9 @@ bot.on(["message"], async (ctx) => {
       || member.bio.toLowerCase().includes('www')
     )
   ) {
-    ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+    if (ctx.message?.message_id && safeChatId(ctx) !== undefined) {
+      ctx.api.deleteMessage(safeChatId(ctx)!, ctx.message.message_id).catch(() => { })
+    }
     punishUser(ctx)
     if (ctx.from) {
       const msg = await replyMsg({
@@ -531,7 +586,9 @@ bot.on(["message"], async (ctx) => {
     ctx.message?.text?.toLowerCase().includes('www')
 
   ) {
-    ctx.api.deleteMessage(ctx.chat?.id ?? 0, ctx.msgId ?? 0).catch(() => { })
+    if (ctx.message?.message_id && safeChatId(ctx) !== undefined) {
+      ctx.api.deleteMessage(safeChatId(ctx)!, ctx.message.message_id).catch(() => { })
+    }
     punishUser(ctx)
     if (ctx.from) {
       const msg = await replyMsg({
@@ -569,5 +626,3 @@ bot.catch((err) => {
     console.error("Unknown error:", e);
   }
 });
-
-
